@@ -3,7 +3,11 @@ import { onMounted, ref, nextTick } from "vue";
 import api from "../../api";
 import { DataTable } from "simple-datatables";
 import ModalAlumni from "../Komponen/ModalAlumni.vue";
+import logout from "../Komponen/logout.vue";
 import "simple-datatables/dist/style.css";
+import { useRouter } from "vue-router";
+const loading = ref(false);
+const router = useRouter();
 
 const Alumni = ref([]);
 const currentAlumni = ref({});
@@ -22,6 +26,11 @@ const handleAlumni = async (id) => {
   }
 };
 onMounted(async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    router.push("/Login"); // arahkan ke halaman login
+    return; // hentikan eksekusi jika belum login
+  }
   await fetchDataAlumni();
   // Delay agar DOM selesai render
   const msg = localStorage.getItem("successMessage");
@@ -45,8 +54,14 @@ const karirLabel = {
 
 <template>
   <div>
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <h3 class="mb-3">Data Alumni</h3>
     <ModalAlumni :alumni="currentAlumni" />
+    <logout v-model:loading="loading"></logout>
     <button
       type="button"
       class="mb-3 btn-grad"
@@ -56,10 +71,10 @@ const karirLabel = {
       Tambahkan Data
     </button>
 
-    <div v-if="successMessage" class="alert alert-success mt-3">
-      {{ successMessage }}
-    </div>
     <div class="container">
+      <div v-if="successMessage" class="alert alert-success mt-3">
+        {{ successMessage }}
+      </div>
       <div class="col-md-12">
         <div class="table-responsive">
           <table id="alumniTable" class="table table-striped table-dark">
@@ -144,3 +159,17 @@ const karirLabel = {
     </div>
   </div>
 </template>
+<style scoped>
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+</style>

@@ -3,7 +3,7 @@ const routes=[
     {
         path:'/',
         name:'home',
-        component : () => import('../views/home.vue')
+        component : () => import('../views/tampilan/card.vue')
     },
     {
         path:'/Alumni',

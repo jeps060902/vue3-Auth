@@ -37,6 +37,11 @@ const gradeLabel = {
 };
 
 onMounted(async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    router.push("/Login"); // arahkan ke halaman login
+    return; // hentikan eksekusi jika belum login
+  }
   await fetchDataPrestasi();
   // Delay agar DOM selesai render
   const msg = localStorage.getItem("successMessage");
