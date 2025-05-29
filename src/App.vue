@@ -1,7 +1,6 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { onMounted, onUnmounted, watch } from "vue";
-
 const route = useRoute();
 
 const updateBodyClass = () => {
@@ -31,8 +30,6 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <div class="container">
-      <router-view></router-view>
-    </div>
+    <router-view></router-view>
   </div>
 </template>

@@ -103,6 +103,32 @@ const tambahPrestasi = async () => {
     }
   }
 };
+const status = ref("");
+const tempat = ref("");
+const posisi = ref("");
+const tahun_mulai = ref("");
+const tahun_selesai = ref("");
+const tambahKarir = async () => {
+  f.append("alumni_id", id_edit.value);
+  f.append("status", status.value);
+  f.append("posisi", posisi.value);
+  f.append("tempat", tempat.value);
+  f.append("tahun_mulai", tahun_mulai.value);
+  f.append("tahun_selesai", tahun_selesai.value);
+
+  try {
+    const res = await api.post(`api/Karir`, f);
+    console.log("response:", res.data);
+    localStorage.setItem("successMessage", res.data.message);
+    window.location.reload();
+    alert("karir berhasil Ditambahkan");
+  } catch (err) {
+    if (err.response && err.response.status === 422) {
+      errors.value = err.response.data.errors;
+      alert("karir gagal ditambahkan");
+    }
+  }
+};
 </script>
 <template>
   <!-- tambah -->
@@ -345,7 +371,7 @@ const tambahPrestasi = async () => {
     aria-hidden="true"
   >
     <div class="modal-dialog">
-      <form @submit.prevent="tambahPrestasi" method="POST">
+      <form @submit.prevent="tambahKarir">
         <input
           type="hidden"
           name="alumni_id"
@@ -355,7 +381,7 @@ const tambahPrestasi = async () => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modalTambahPrestasiLabel">
-              Tambah Prestasi
+              Tambah Karir
             </h5>
             <button
               type="button"
@@ -395,24 +421,68 @@ const tambahPrestasi = async () => {
               />
             </div>
             <div class="mb-2">
-              <label>Nama Prestasi</label>
+              <label>status</label>
+              <select v-model="status" class="form-select">
+                <option value="" selected disabled>--Pilih Status--</option>
+                <option value="1">Kuliah</option>
+                <option value="2">Kerja</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label>tempat</label>
               <input
                 type="text"
-                v-model="nama_prestasi"
+                v-model="tempat"
                 class="form-control"
                 required
               />
             </div>
             <div class="mb-2">
-              <label>Tingkatan</label>
-              <select v-model="grade" class="form-select">
-                <option value="" selected disabled>--Pilih Tingkatan--</option>
-                <option value="1">Desa</option>
-                <option value="2">Kecataman</option>
-                <option value="3">Kota</option>
-                <option value="4">Provinsi</option>
-                <option value="5">Nasional</option>
-                <option value="6">Internasional</option>
+              <label>Posisi</label>
+              <input
+                type="text"
+                v-model="posisi"
+                class="form-control"
+                placeholder="jika kuliah : mahasiswa, jika bekerja misalnya : karyawan"
+                required
+              />
+            </div>
+            <div class="mb-2">
+              <label>Tahun Mulai</label>
+              <select v-model="tahun_mulai" class="form-select">
+                <option selected>--Pilih Tahun Mulai--</option>
+                <option value="2013">2013</option>
+                <option value="2014">2014</option>
+                <option value="2015">2015</option>
+                <option value="2016">2016</option>
+                <option value="2017">2017</option>
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label>Tahun Selesai</label>
+              <select v-model="tahun_selesai" class="form-select">
+                <option selected>--Pilih Tahun Selesai--</option>
+                <option value="2013">2013</option>
+                <option value="2014">2014</option>
+                <option value="2015">2015</option>
+                <option value="2016">2016</option>
+                <option value="2017">2017</option>
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
               </select>
             </div>
           </div>
@@ -424,9 +494,7 @@ const tambahPrestasi = async () => {
             >
               Batal
             </button>
-            <button type="submit" class="btn btn-primary">
-              Simpan Prestasi
-            </button>
+            <button type="submit" class="btn btn-primary">Simpan Karir</button>
           </div>
         </div>
       </form>

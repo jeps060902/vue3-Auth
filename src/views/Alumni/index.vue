@@ -118,7 +118,7 @@ const karirLabel = {
                     v-if="item.karir && item.karir.length >= 1"
                     :href="`/karir/${item.id}`"
                   >
-                    {{ karirLabel[item.karir] }}
+                    lihat karir
                   </a>
                   <button
                     v-else

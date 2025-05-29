@@ -1,29 +1,27 @@
 import {createRouter, createWebHistory} from 'vue-router' 
+import DefaultLayout from '../views/Layout/DefaultLayout.vue'
+import Home from'../views/tampilan/card.vue'
+import Alumni from'../views/Alumni/index.vue'
+import Prestasi from'../views/Prestasi/index.vue'
+import Karir from'../views/Karir/index.vue'
 const routes=[ 
-    {
-        path:'/',
-        name:'home',
-        component : () => import('../views/tampilan/card.vue')
-    },
-    {
-        path:'/Alumni',
-        name:'Alumni.index',
-        component : () => import('../views/Alumni/index.vue')
-    },
-    {
-        path:'/Prestasi',
-        name:'Alumni.prestasi',
-        component : () => import('../views/Prestasi/index.vue')
-    },
+     {
+    path: '/',
+    component: DefaultLayout,
+    children: [
+      { path: '/', name: 'Home', component: Home },
+      { path: '/Alumni', name: 'Alumni.index', component: Alumni },
+      { path: '/Prestasi', name: 'Prestasi.index', component: Prestasi },
+      { path: '/Prestasi/:id', name: 'Prestasi.detail', component: Prestasi },
+      { path: '/Karir', name: 'Prestasi.index', component: Karir },
+      { path: '/Karir/:id', name: 'Prestasi.detail', component: Karir },
+      // Tambahkan rute lain di sini yang ingin pakai navbar
+    ]
+  },
     {
         path:'/Login',
         name:'login',
         component : () => import('../views/Auth/login.vue')
-    },
-    {
-        path:'/Prestasi/:id',
-        name:'Alumni.prestasiDetail',
-        component : () => import('../views/Prestasi/index.vue')
     },
     // {
     //     path:'/edit/:id',
