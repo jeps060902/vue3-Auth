@@ -50,79 +50,72 @@ onMounted(async () => {
     alert("anda sedang login");
     return; // hentikan eksekusi jika belum login
   }
+  setTimeout(() => {
+    error.value = "";
+    successLogout.value = "";
+  }, 5000);
 });
 </script>
 <template>
-  <div id="layoutAuthentication">
-    <div id="layoutAuthentication_content">
-      <main>
-        <div v-if="loading" class="loading-overlay">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-        <div class="container">
-          <div class="row justify-content-center" style="margin-top: 30px">
-            <div class="col-lg-7">
-              <div class="card shadow-lg border-0 rounded-lg mt-5">
-                <img src="/img/logo yadika.png" class="logo" />
-                <div class="card-header">
-                  <h3 class="text-center font-weight-light my-4 mt-5">Login</h3>
+  <main>
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row justify-content-center" style="margin-top: 30px">
+        <div class="col-lg-7">
+          <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <img src="/img/logo yadika.png" class="logo" />
+            <div class="card-header">
+              <h3 class="text-center font-weight-light my-4 mt-5">Login</h3>
+            </div>
+            <div v-if="error" class="alert alert-danger mt-2">
+              {{ error }}
+            </div>
+            <div v-if="successLogout" class="alert alert-success mt-3">
+              {{ successLogout }}
+            </div>
+            <div class="card-body">
+              <form class="user" @submit.prevent="handleLogin">
+                <div class="form-floating mb-3">
+                  <input
+                    class="form-control form-control-user"
+                    id="inputEmail"
+                    type="email"
+                    placeholder="email"
+                    v-model="email"
+                    value=""
+                  />
+                  <label for="inputEmail">Email</label>
                 </div>
-                <div v-if="success" class="alert alert-success mt-2">
-                  {{ success }}
+                <div class="form-floating mb-3">
+                  <input
+                    class="form-control form-control-user"
+                    id="inputPassword"
+                    type="password"
+                    placeholder="password"
+                    v-model="password"
+                  />
+                  <label for="password">Password</label>
+                  <div class="invalid-feedback"></div>
                 </div>
-                <div v-if="error" class="alert alert-danger mt-2">
-                  {{ error }}
-                </div>
-                <div v-if="successLogout" class="alert alert-success mt-3">
-                  {{ successLogout }}
-                </div>
-                <div class="card-body">
-                  <form class="user" @submit.prevent="handleLogin">
-                    <div class="form-floating mb-3">
-                      <input
-                        class="form-control form-control-user"
-                        id="inputEmail"
-                        type="email"
-                        placeholder="email"
-                        v-model="email"
-                        value=""
-                      />
-                      <label for="inputEmail">Email</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                      <input
-                        class="form-control form-control-user"
-                        id="inputPassword"
-                        type="password"
-                        placeholder="password"
-                        v-model="password"
-                      />
-                      <label for="password">Password</label>
-                      <div class="invalid-feedback"></div>
-                    </div>
 
-                    <div class="mt-4 mb-0">
-                      <div class="d-grid">
-                        <button
-                          type="submit"
-                          class="tombol"
-                          :disabled="loading"
-                        >
-                          {{ loading ? "Memproses..." : "Login" }}
-                        </button>
-                      </div>
-                    </div>
-                  </form>
+                <div class="mt-4 mb-0">
+                  <div class="d-grid">
+                    <button type="submit" class="tombol" :disabled="loading">
+                      {{ loading ? "Memproses..." : "Login" }}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
-  </div>
+  </main>
 </template>
 <style scoped>
 .loading-overlay {

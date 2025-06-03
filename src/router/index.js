@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import DefaultLayout from '../views/Layout/DefaultLayout.vue'
 import Home from'../views/tampilan/card.vue'
 import Alumni from'../views/Alumni/index.vue'
-import Prestasi from'../views/Prestasi/index.vue'
+import Prestasi from '../views/Prestasi/index.vue'
 import Karir from'../views/Karir/index.vue'
 const routes=[ 
      {
@@ -13,8 +13,8 @@ const routes=[
       { path: '/Alumni', name: 'Alumni.index', component: Alumni },
       { path: '/Prestasi', name: 'Prestasi.index', component: Prestasi },
       { path: '/Prestasi/:id', name: 'Prestasi.detail', component: Prestasi },
-      { path: '/Karir', name: 'Prestasi.index', component: Karir },
-      { path: '/Karir/:id', name: 'Prestasi.detail', component: Karir },
+      { path: '/Karir', name: 'karir.index', component: Karir },
+      { path: '/Karir/:id', name: 'karir.detail', component: Karir },
       // Tambahkan rute lain di sini yang ingin pakai navbar
     ]
   },

@@ -1,31 +1,23 @@
 <script setup>
-import { onMounted, ref, nextTick, watch } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 import api from "../../api";
-import { DataTable } from "simple-datatables";
 import ModalPrestasi from "../Komponen/ModalPrestasi.vue";
-import "simple-datatables/dist/style.css";
+import { useRoute, useRouter } from "vue-router";
+import { TabulatorFull as Tabulator } from "tabulator-tables";
 
-import { useRoute } from "vue-router";
+import "tabulator-tables/dist/css/tabulator_midnight.min.css";
+import "../../Assets/css/style_tabel.css";
+
 const alumni = ref({});
 const route = useRoute();
+const router = useRouter();
 const id = route.params.id;
 
 const successMessage = ref("");
-
 const Prestasi = ref([]);
 
-const fetchDataPrestasi = async () => {
-  let response;
-  if (id) {
-    response = await api.get(`/api/Prestasi/${id}`);
-  } else {
-    response = await api.get("/api/Prestasi");
-  }
-  Prestasi.value = response.data.data;
-  if (response.data.data.length > 0) {
-    alumni.value = response.data.data[0];
-  }
-};
+const tabulatorContainer = ref(null);
+let tabulatorInstance = null;
 
 const gradeLabel = {
   1: "Desa",
@@ -36,14 +28,62 @@ const gradeLabel = {
   6: "International",
 };
 
+const fetchDataPrestasi = async () => {
+  let response;
+  if (id) {
+    response = await api.get(`/api/Prestasi/${id}`);
+  } else {
+    response = await api.get("/api/Prestasi");
+  }
+  Prestasi.value = response.data.data;
+
+  if (Prestasi.value.length > 0) {
+    alumni.value = Prestasi.value[0].alumni;
+  }
+
+  if (tabulatorInstance) {
+    tabulatorInstance.setData(Prestasi.value);
+  }
+};
+
+const initializeTable = () => {
+  tabulatorInstance = new Tabulator(tabulatorContainer.value, {
+    data: [],
+    layout: "fitColumns",
+    pagination: "local",
+    paginationSize: 5,
+    paginationSizeSelector: [5, 10, 25],
+    height: "500px",
+    columns: [
+      { title: "No", formatter: "rownum", hozAlign: "center", width: 60 },
+      { title: "Nama", field: "alumni.nama" },
+      { title: "Prestasi", field: "prestasi" },
+      {
+        title: "Tingkatan",
+        field: "grade",
+        formatter: (cell) => gradeLabel[cell.getValue()] || "Tidak Diketahui",
+      },
+      {
+        title: "Action",
+        formatter: () => `
+          <button class="badgeEdit-grad" data-bs-toggle="modal" data-bs-target="#modalEditPrestasi">Edit</button>
+          <button class="badgeHapus-grad" data-bs-toggle="modal" data-bs-target="#modalHapusPrestasi">Hapus</button>
+        `,
+      },
+    ],
+  });
+};
+
 onMounted(async () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    router.push("/Login"); // arahkan ke halaman login
-    return; // hentikan eksekusi jika belum login
+    router.push("/Login");
+    return;
   }
+
+  initializeTable();
   await fetchDataPrestasi();
-  // Delay agar DOM selesai render
+
   const msg = localStorage.getItem("successMessage");
   if (msg) {
     successMessage.value = msg;
@@ -53,9 +93,6 @@ onMounted(async () => {
       successMessage.value = "";
     }, 3000);
   }
-  nextTick(() => {
-    new DataTable("#prestasiTable");
-  });
 });
 </script>
 
@@ -63,6 +100,7 @@ onMounted(async () => {
   <div>
     <ModalPrestasi :alumni="alumni" />
     <h3 class="mb-3">Data Prestasi Alumni</h3>
+
     <button
       v-if="id"
       type="button"
@@ -81,54 +119,9 @@ onMounted(async () => {
     <div v-if="successMessage" class="alert alert-success mt-3">
       {{ successMessage }}
     </div>
+
     <div class="container">
-      <div class="col-md-12">
-        <div class="table-responsive">
-          <table id="prestasiTable" class="table table-striped table-dark">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Tahun</th>
-                <th>Jurusan</th>
-                <th>Prestasi</th>
-                <th>Tingkatan</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in Prestasi" :key="index">
-                <td>{{ index + 1 }}</td>
-                <td>{{ item.alumni.nama }}</td>
-                <td>{{ item.alumni.angkatan }}</td>
-                <td>{{ item.alumni.jurusan }}</td>
-                <td>
-                  {{ item.prestasi }}
-                </td>
-                <td>{{ gradeLabel[item.grade] || "Tidak Diketahui" }}</td>
-                <td>
-                  <button
-                    type="button"
-                    class="badgeEdit-grad"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalEditPrestasi"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    class="badgeHapus-grad"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalHapusPrestasi"
-                  >
-                    Hapus
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div ref="tabulatorContainer"></div>
     </div>
   </div>
 </template>

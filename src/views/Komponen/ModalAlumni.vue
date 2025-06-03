@@ -3,16 +3,20 @@ import { ref, watch } from "vue";
 import api from "../../api";
 
 const nama = ref("");
+const image = ref("");
 const jurusan = ref("");
 const angkatan = ref("");
 const errors = ref({});
 
 let f = new FormData();
-
+const handleFileChange = (e) => {
+  image.value = e.target.files[0];
+};
 const tambah = async () => {
   console.log("submit jalan");
 
   f.append("nama", nama.value);
+  f.append("image", image.value);
   f.append("jurusan", jurusan.value);
   f.append("angkatan", angkatan.value);
 
@@ -182,6 +186,13 @@ const tambahKarir = async () => {
               <option value="2024">2024</option>
               <option value="2025">2025</option>
             </select>
+            <label>Photo</label>
+            <div class="input-group mb-3">
+              <input type="file" class="form-control" id="inputGroupFile02" />
+              <label class="input-group-text" for="inputGroupFile02"
+                >Upload</label
+              >
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Simpan</button>
